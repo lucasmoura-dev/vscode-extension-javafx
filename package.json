@@ -1,0 +1,62 @@
+{
+  "name": "javafx",
+  "displayName": "JavaFX Project Manager",
+  "description": "Create JavaFX project easily.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:javafx.createJavaFx"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "javafx.createJavaFx",
+        "title": "Criar um projeto...",
+        "category": "JavaFX",
+        "icon": "$(add)"
+      }
+    ],
+    "configuration": {
+      "title": "JavaFX",
+      "properties": {
+        "javafx.libPath": {
+          "type": "string",
+          "description": "Caminho da pasta 'lib' do javafx."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^8.0.0",
+    "@types/lodash": "^4.14.188",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.73.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.26.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "fs-extra": "^10.1.0",
+    "lodash": "^4.17.21"
+  }
+}
