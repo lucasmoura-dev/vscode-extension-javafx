@@ -1,0 +1,4 @@
+{
+	"extension.createProject.title": "Create a project...",
+	"extension.configuration.libPath.description": "Path of JavaFX's 'lib' folder."
+}

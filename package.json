@@ -13,11 +13,12 @@
     "onCommand:javafx.createJavaFx"
   ],
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "contributes": {
     "commands": [
       {
         "command": "javafx.createJavaFx",
-        "title": "Criar um projeto...",
+        "title": "%extension.createProject.title%",
         "category": "JavaFX",
         "icon": "$(add)"
       }
@@ -27,7 +28,7 @@
       "properties": {
         "javafx.libPath": {
           "type": "string",
-          "description": "Caminho da pasta 'lib' do javafx."
+          "description": "%extension.configuration.libPath.description%"
         }
       }
     }
@@ -49,6 +50,7 @@
     "@types/vscode": "^1.73.0",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
+    "@vscode/l10n-dev": "^0.0.18",
     "@vscode/test-electron": "^2.2.0",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
@@ -58,6 +60,7 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@vscode/l10n": "^0.0.9",
     "fs-extra": "^10.1.0",
     "lodash": "^4.17.21"
   }
