@@ -21,6 +21,7 @@ import javaFxLibUtils from "../utils/javaFxLibUtils";
 import { Configuration } from "../constants/configuration";
 import projectTypes from "../constants/projectTypes";
 import { EnvironmentHelper } from "../helpers/EnvironmentHelper";
+import { l10n } from "vscode";
 
 export class CreatorSimpleJavaFXProject {
   context: ExtensionContext;
@@ -47,17 +48,15 @@ export class CreatorSimpleJavaFXProject {
   async init() {
     try {
       this.javaFXPath = await javaFxLibUtils.checkJavaFXLibFolder(this.configuration);
-      window.showInformationMessage('Pasta lib carregada com sucesso.');
+      // window.showInformationMessage(l10n.t('success.javaFxLoaded'));
     } catch (error: any) {
       window.showErrorMessage(
         error.message ||
           error ||
-          "Houve um problema na seleção da pasta lib do JavaFX."
+          l10n.t('error.javaFxLoaded')
       );
       console.error(error);
     }
-
-    console.log(`Caminho da pasta lib: ` + this.javaFXPath);
   }
 
   async create() {
@@ -94,7 +93,7 @@ export class CreatorSimpleJavaFXProject {
 
     const choice = await window.showQuickPick(items, {
       ignoreFocusOut: true,
-      placeHolder: "Selecione o tipo do projeto JavaFX",
+      placeHolder: l10n.t('createProject.selectType'),
     });
 
     if (!choice) {
@@ -108,11 +107,11 @@ export class CreatorSimpleJavaFXProject {
       defaultUri: workspaceFolder && workspaceFolder.uri,
       canSelectFiles: false,
       canSelectFolders: true,
-      openLabel: "Selecione o diretório do projeto",
+      openLabel: l10n.t('createProject.chooseProjectRoot'),
     });
 
     if (!location || !location.length) {
-      throw new Error("Invalid project root");
+      throw new Error(l10n.t('error.invalidProjectRoot'));
     }
 
     return location[0].fsPath;
@@ -120,21 +119,21 @@ export class CreatorSimpleJavaFXProject {
 
   async defineProjectName(basePath: string): Promise<string> {
     const projectName: string | undefined = await window.showInputBox({
-      prompt: "Digite o nome do projeto JavaFX",
+      prompt: l10n.t('createProject.enterProjectName'),
       ignoreFocusOut: true,
       validateInput: async (name: string): Promise<string> => {
         if (name && !name.match(/^[^*~/\\]+$/)) {
-          return "Digite um nome de projeto válido!";
+          return l10n.t('info.invalidProjectName');
         }
         if (name && (await fse.pathExists(path.join(basePath, name)))) {
-          return "Já existe um projeto com esse nome!";
+          return l10n.t('info.duplicatedProjectName');
         }
         return "";
       },
     });
 
     if (!projectName) {
-      throw new Error("Invalid project name");
+      throw new Error(l10n.t('error.invalidProjectName'));
     }
 
     return projectName;

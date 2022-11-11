@@ -1,4 +1,13 @@
 {
-  "hello": "Hello",
-  "bye": "Bye"
+  "createProject.selectType": "Select JavaFX project type",
+  "createProject.chooseProjectRoot": "Select the project directory",
+  "createProject.enterProjectName": "Enter the JavaFX project name",
+  "createProject.type.simple.displayName": "Simple",
+  "createProject.type.simple.detail": "Create a JavaFX project without build tools.",
+  "info.invalidProjectName": "Please enter a valid project name!",
+  "info.duplicatedProjectName": "There is already a project with that name!",
+  "success.javaFxLoaded": "JavaFX's 'lib' folder loaded successfully.",
+  "error.javaFxLoaded": "There was a problem loading the JavaFX lib folder.",
+  "error.invalidProjectRoot": "Invalid project root",
+  "error.invalidProjectName": "Invalid project name"
 }
