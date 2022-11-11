@@ -1,6 +1,6 @@
 import fileDialogUtils from "./fileDialogUtils";
 import * as fse from "fs-extra";
-import { WorkspaceConfiguration } from "vscode";
+import { window, WorkspaceConfiguration } from "vscode";
 import { Configuration } from "../constants/configuration";
 import { config } from "process";
 
@@ -14,9 +14,12 @@ const checkJavaFXLibFolder = async (
 
     if (containsValidPath) {
       return parsedPath;
+    } else {
+      window.showErrorMessage('O diretório da pasta lib do JavaFX é inválido.');
     }
   }
 
+  
   const newPath = await chooseJavaFXPath();
   const parsedNewPath = parseLibPath(newPath);
   await configuration.update(Configuration.JAVAFX_LIB_PATH, parsedNewPath, true);
@@ -33,6 +36,7 @@ const parseLibPath = (oldPath: string): string => {
 
 const chooseJavaFXPath = async (): Promise<string> => {
   try {
+    window.showInformationMessage("Selecione a pasta 'lib' do javaFX.");
     const path = fileDialogUtils.chooseFolder(
       "Selecione a pasta lib do JavaFX"
     );

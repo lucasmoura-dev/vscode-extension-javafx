@@ -21,10 +21,8 @@ import {
   VSCodeConfigurationFile,
   VSCodeJavaSettingsFile,
 } from "../types/vscodeEnvs";
-import fileDialogUtils from "../utils/fileDialogUtils";
 import javaFxLibUtils from "../utils/javaFxLibUtils";
 import { Configuration } from "../constants/configuration";
-import { initial } from "lodash";
 
 const projectTypes: IProjectType[] = [
   {
@@ -38,19 +36,6 @@ const projectTypes: IProjectType[] = [
     },
   },
 ];
-
-const items: IProjectTypeQuickPick[] = projectTypes.map(
-  (type: IProjectType) => {
-    return {
-      label: type.displayName,
-      description: type.description,
-      detail: type.metadata.extensionName
-        ? `Provided by $(extensions) ${type.metadata.extensionName}`
-        : type.detail,
-      metadata: type.metadata,
-    };
-  }
-);
 
 export class CreatorSimpleJavaFXProject {
   context: ExtensionContext;
@@ -66,12 +51,18 @@ export class CreatorSimpleJavaFXProject {
       Configuration.WORKSPACE_CONFIGURATION_ROOT
     );
 
+    this.templateRoot = path.join(
+      this.context.extensionPath,
+      "templates",
+      "simpleJavaFXProject"
+    );
+
     this.init();
   }
 
   async init() {
     try {
-      await javaFxLibUtils.checkJavaFXLibFolder(this.configuration);
+      this.javaFXPath = await javaFxLibUtils.checkJavaFXLibFolder(this.configuration);
       window.showInformationMessage('Pasta lib carregada com sucesso.');
     } catch (error: any) {
       window.showErrorMessage(
@@ -82,31 +73,7 @@ export class CreatorSimpleJavaFXProject {
       console.error(error);
     }
 
-    this.javaFXPath =
-      this.configuration?.get(Configuration.JAVAFX_LIB_PATH) || "teste";
-    this.templateRoot = path.join(
-      this.context.extensionPath,
-      "templates",
-      "simpleJavaFXProject"
-    );
-
     console.log(`Caminho da pasta lib: ` + this.javaFXPath);
-  }
-
-  containsJavaFXLib(): boolean {
-    const libPath = this.configuration?.get(Configuration.JAVAFX_LIB_PATH);
-    return !!libPath;
-  }
-
-  async checkJavaFXLibFolder(): Promise<void> {
-    const libPathFromSettings = this.getLibPath();
-    const containsValidPath = await fse.pathExists(libPathFromSettings);
-
-    if (containsValidPath) {
-      return;
-    }
-
-    const path = await javaFxLibUtils.chooseJavaFXPath();
   }
 
   async create() {
@@ -197,15 +164,6 @@ export class CreatorSimpleJavaFXProject {
     );
   }
 
-  getLibPath(): string {
-    // susbtituir
-    let libPath: string =
-      this.configuration?.get(Configuration.JAVAFX_LIB_PATH) || "";
-    libPath = libPath.replace(/\\/g, "/");
-    libPath = !libPath.endsWith("/lib") ? `${libPath}/lib` : libPath;
-    return libPath;
-  }
-
   async setEnvironmentSettings(): Promise<void> {
     const launchJsonFile = path.join(
       this.projectRoot /*this.templateRoot*/,
@@ -217,8 +175,7 @@ export class CreatorSimpleJavaFXProject {
 
     const configurations = launchJsonContent.configurations.map(
       ({ vmArgs: oldVmArgs, ...rest }) => {
-        const libPath = this.getLibPath();
-        const vmArgs = `--module-path \"${libPath}\" --add-modules javafx.controls,javafx.fxml`;
+        const vmArgs = `--module-path \"${this.javaFXPath}\" --add-modules javafx.controls,javafx.fxml`;
         return { vmArgs, ...rest };
       }
     );
@@ -242,19 +199,15 @@ export class CreatorSimpleJavaFXProject {
     let settingsJsonContent: VSCodeJavaSettingsFile =
       fse.readJsonSync(settingsJsonFile) || {};
 
-    //d:\\Java\\Java Libs\\javafx-sdk-18.0.2\\lib\\
-
-    const libPath = this.getLibPath();
-
     const javaFXReferencedLibraries = [
-      `${libPath}/javafx.base.jar`,
-      `${libPath}/javafx.controls.jar`,
-      `${libPath}/javafx.fxml.jar`,
-      `${libPath}/javafx.graphics.jar`,
-      `${libPath}/javafx.media.jar`,
-      `${libPath}/javafx.swing.jar`,
-      `${libPath}/javafx.web.jar`,
-      `${libPath}/javafx-swt.ja`,
+      `${this.javaFXPath}/javafx.base.jar`,
+      `${this.javaFXPath}/javafx.controls.jar`,
+      `${this.javaFXPath}/javafx.fxml.jar`,
+      `${this.javaFXPath}/javafx.graphics.jar`,
+      `${this.javaFXPath}/javafx.media.jar`,
+      `${this.javaFXPath}/javafx.swing.jar`,
+      `${this.javaFXPath}/javafx.web.jar`,
+      `${this.javaFXPath}/javafx-swt.ja`,
     ];
 
     const newJsonContent = {
@@ -264,8 +217,6 @@ export class CreatorSimpleJavaFXProject {
         ...javaFXReferencedLibraries,
       ],
     };
-
-    console.log(newJsonContent);
 
     fse.writeJsonSync(settingsJsonFile, newJsonContent, {
       spaces: "\t",
