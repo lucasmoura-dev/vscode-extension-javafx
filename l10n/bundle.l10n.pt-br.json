@@ -1,13 +1,13 @@
 {
-  "createProject.selectType": "Selecione o tipo do projeto",
-  "createProject.chooseProjectRoot": "Selecione o diretório do projeto",
-  "createProject.enterProjectName": "Digite o nome do projeto",
-  "createProject.type.simple.displayName": "Simples",
-  "createProject.type.simple.detail": "Crie um projeto JavaFX sem build tools.",
-  "info.invalidProjectName": "Digite um nome de projeto válido!",
-  "info.duplicatedProjectName": "Já existe um projeto com esse nome neste diretório",
-  "success.javaFxLoaded": "A pasta 'lib' do JavaFX foi carregada com sucesso.",
-  "error.javaFxLoaded": "Houve um problema ao carregar a pasta 'lib' do JavaFX!",
-  "error.invalidProjectRoot": "O diretório no qual o projeto será salvo é inválido",
-  "error.invalidProjectName": "O nome do projeto é inválido"
+  "Select JavaFX project type": "Selecione o tipo do projeto",
+  "Select the project directory": "Selecione o diretório do projeto",
+  "Enter the JavaFX project name": "Digite o nome do projeto",
+  "Simple": "Simples",
+  "Create a JavaFX project without build tools.": "Crie um projeto JavaFX sem build tools.",
+  "Please enter a valid project name!": "Digite um nome de projeto válido!",
+  "There is already a project with that name!": "Já existe um projeto com esse nome neste diretório",
+  "JavaFX's 'lib' folder loaded successfully.": "A pasta 'lib' do JavaFX foi carregada com sucesso.",
+  "There was a problem loading the JavaFX lib folder.": "Houve um problema ao carregar a pasta 'lib' do JavaFX!",
+  "Invalid project root": "O diretório no qual o projeto será salvo é inválido",
+  "Invalid project name": "O nome do projeto é inválido"
 }

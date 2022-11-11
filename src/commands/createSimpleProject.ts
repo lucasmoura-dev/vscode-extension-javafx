@@ -48,12 +48,12 @@ export class CreatorSimpleJavaFXProject {
   async init() {
     try {
       this.javaFXPath = await javaFxLibUtils.checkJavaFXLibFolder(this.configuration);
-      // window.showInformationMessage(l10n.t('success.javaFxLoaded'));
+      // window.showInformationMessage(l10n.t('JavaFX's 'lib' folder loaded successfully.'));
     } catch (error: any) {
       window.showErrorMessage(
         error.message ||
           error ||
-          l10n.t('error.javaFxLoaded')
+          l10n.t('There was a problem loading the JavaFX lib folder.')
       );
       console.error(error);
     }
@@ -93,7 +93,7 @@ export class CreatorSimpleJavaFXProject {
 
     const choice = await window.showQuickPick(items, {
       ignoreFocusOut: true,
-      placeHolder: l10n.t('createProject.selectType'),
+      placeHolder: l10n.t('Select JavaFX project type'),
     });
 
     if (!choice) {
@@ -107,11 +107,11 @@ export class CreatorSimpleJavaFXProject {
       defaultUri: workspaceFolder && workspaceFolder.uri,
       canSelectFiles: false,
       canSelectFolders: true,
-      openLabel: l10n.t('createProject.chooseProjectRoot'),
+      openLabel: l10n.t('Select the project directory'),
     });
 
     if (!location || !location.length) {
-      throw new Error(l10n.t('error.invalidProjectRoot'));
+      throw new Error(l10n.t('Invalid project root'));
     }
 
     return location[0].fsPath;
@@ -119,21 +119,21 @@ export class CreatorSimpleJavaFXProject {
 
   async defineProjectName(basePath: string): Promise<string> {
     const projectName: string | undefined = await window.showInputBox({
-      prompt: l10n.t('createProject.enterProjectName'),
+      prompt: l10n.t('Enter the JavaFX project name'),
       ignoreFocusOut: true,
       validateInput: async (name: string): Promise<string> => {
         if (name && !name.match(/^[^*~/\\]+$/)) {
-          return l10n.t('info.invalidProjectName');
+          return l10n.t('Please enter a valid project name!');
         }
         if (name && (await fse.pathExists(path.join(basePath, name)))) {
-          return l10n.t('info.duplicatedProjectName');
+          return l10n.t('There is already a project with that name!');
         }
         return "";
       },
     });
 
     if (!projectName) {
-      throw new Error(l10n.t('error.invalidProjectName'));
+      throw new Error(l10n.t('Invalid project name'));
     }
 
     return projectName;
