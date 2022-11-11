@@ -10,32 +10,17 @@ import {
 import {
   IProjectType,
   IProjectTypeQuickPick,
-  ProjectType,
 } from "../types/project";
 import * as fse from "fs-extra";
 import * as _ from "lodash";
 import workspaceUtils from "../utils/workspaceUtils";
 import path = require("path");
 import { Commands } from "../constants/commands";
-import {
-  VSCodeConfigurationFile,
-  VSCodeJavaSettingsFile,
-} from "../types/vscodeEnvs";
+
 import javaFxLibUtils from "../utils/javaFxLibUtils";
 import { Configuration } from "../constants/configuration";
-
-const projectTypes: IProjectType[] = [
-  {
-    displayName: "Simples",
-    detail: "Crie um projeto JavaFX sem build tools.",
-    metadata: {
-      type: ProjectType.SimpleJavaFX,
-      extensionId: "",
-      extensionName: "",
-      createCommandId: "",
-    },
-  },
-];
+import projectTypes from "../constants/projectTypes";
+import { EnvironmentHelper } from "../helpers/EnvironmentHelper";
 
 export class CreatorSimpleJavaFXProject {
   context: ExtensionContext;
@@ -43,7 +28,6 @@ export class CreatorSimpleJavaFXProject {
   javaFXPath = '';
   projectRoot = '';
   templateRoot = '';
-
 
   constructor(context: ExtensionContext) {
     this.context = context;
@@ -81,12 +65,13 @@ export class CreatorSimpleJavaFXProject {
     const basePath = await this.chooseProjectRoot();
     const projectName = await this.defineProjectName(basePath);
     this.projectRoot = path.join(basePath, projectName);
+    const environmentHelper = new EnvironmentHelper(this.projectRoot, this.javaFXPath);
 
     try {
       await fse.ensureDir(this.projectRoot);
       await fse.copy(this.templateRoot, this.projectRoot);
-      this.setEnvironmentSettings();
-      this.addReferencedLibraries();
+      environmentHelper.setEnvironmentSettings();
+      environmentHelper.addReferencedLibraries();
       this.openProject();
     } catch (error: any) {
       throw error;
@@ -162,64 +147,5 @@ export class CreatorSimpleJavaFXProject {
       Uri.file(this.projectRoot),
       openInNewWindow
     );
-  }
-
-  async setEnvironmentSettings(): Promise<void> {
-    const launchJsonFile = path.join(
-      this.projectRoot /*this.templateRoot*/,
-      ".vscode",
-      "launch.json"
-    );
-    const launchJsonContent: VSCodeConfigurationFile =
-      fse.readJsonSync(launchJsonFile) || {};
-
-    const configurations = launchJsonContent.configurations.map(
-      ({ vmArgs: oldVmArgs, ...rest }) => {
-        const vmArgs = `--module-path \"${this.javaFXPath}\" --add-modules javafx.controls,javafx.fxml`;
-        return { vmArgs, ...rest };
-      }
-    );
-
-    fse.writeJsonSync(
-      launchJsonFile,
-      { ...launchJsonContent, configurations },
-      {
-        spaces: "\t",
-      }
-    );
-  }
-
-  async addReferencedLibraries(): Promise<void> {
-    const settingsJsonFile = path.join(
-      this.projectRoot,
-      ".vscode",
-      "settings.json"
-    );
-
-    const settingsJsonContent: VSCodeJavaSettingsFile =
-      fse.readJsonSync(settingsJsonFile) || {};
-
-    const javaFXReferencedLibraries = [
-      `${this.javaFXPath}/javafx.base.jar`,
-      `${this.javaFXPath}/javafx.controls.jar`,
-      `${this.javaFXPath}/javafx.fxml.jar`,
-      `${this.javaFXPath}/javafx.graphics.jar`,
-      `${this.javaFXPath}/javafx.media.jar`,
-      `${this.javaFXPath}/javafx.swing.jar`,
-      `${this.javaFXPath}/javafx.web.jar`,
-      `${this.javaFXPath}/javafx-swt.ja`,
-    ];
-
-    const newJsonContent = {
-      ...settingsJsonContent,
-      "java.project.referencedLibraries": [
-        ...settingsJsonContent["java.project.referencedLibraries"],
-        ...javaFXReferencedLibraries,
-      ],
-    };
-
-    fse.writeJsonSync(settingsJsonFile, newJsonContent, {
-      spaces: "\t",
-    });
   }
 }

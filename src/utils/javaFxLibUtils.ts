@@ -2,6 +2,9 @@ import fileDialogUtils from "./fileDialogUtils";
 import * as fse from "fs-extra";
 import { window, WorkspaceConfiguration } from "vscode";
 import { Configuration } from "../constants/configuration";
+import path = require("path");
+import { VSCodeJavaSettingsFile } from "../types/vscodeEnvs";
+import javaFXJarFiles from "../constants/javaFxJarFiles";
 
 const checkJavaFXLibFolder = async (
   configuration: WorkspaceConfiguration
@@ -17,7 +20,6 @@ const checkJavaFXLibFolder = async (
       window.showErrorMessage('O diretório da pasta lib do JavaFX é inválido.');
     }
   }
-
   
   const newPath = await chooseJavaFXPath();
   const parsedNewPath = parseLibPath(newPath);
@@ -45,8 +47,35 @@ const chooseJavaFXPath = async (): Promise<string> => {
   }
 };
 
+const createJavaFXSettingsJson = (projectRootPath: string, javaFXLibPath: string) => {
+  const settingsJsonFilePath = path.join(
+    projectRootPath,
+    ".vscode",
+    "settings.json"
+  );
+
+  const settingsJsonContent: VSCodeJavaSettingsFile=
+      fse.readJsonSync(settingsJsonFilePath) || {};
+
+  const parsedJavaFXLibPath = javaFXLibPath.endsWith('/') ? 
+    javaFXLibPath.slice(0, -1) : javaFXLibPath;
+
+  const javaFXReferencedLibraries = javaFXJarFiles.map(jar => `${parsedJavaFXLibPath}/${jar}`);
+  
+  const newJsonContent = {
+    ...settingsJsonContent,
+    "java.project.referencedLibraries": [
+      ...settingsJsonContent["java.project.referencedLibraries"],
+      ...javaFXReferencedLibraries,
+    ],
+  };
+
+  return newJsonContent;
+};
+
 export default {
   parseLibPath,
   chooseJavaFXPath,
   checkJavaFXLibFolder,
+  createJavaFXSettingsJson,
 };
