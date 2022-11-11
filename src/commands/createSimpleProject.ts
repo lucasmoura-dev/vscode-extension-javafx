@@ -40,9 +40,9 @@ const projectTypes: IProjectType[] = [
 export class CreatorSimpleJavaFXProject {
   context: ExtensionContext;
   configuration: WorkspaceConfiguration;
-  javaFXPath: string = '';
-  projectRoot: string = '';
-  templateRoot: string = '';
+  javaFXPath = '';
+  projectRoot = '';
+  templateRoot = '';
 
 
   constructor(context: ExtensionContext) {
@@ -170,7 +170,7 @@ export class CreatorSimpleJavaFXProject {
       ".vscode",
       "launch.json"
     );
-    let launchJsonContent: VSCodeConfigurationFile =
+    const launchJsonContent: VSCodeConfigurationFile =
       fse.readJsonSync(launchJsonFile) || {};
 
     const configurations = launchJsonContent.configurations.map(
@@ -196,7 +196,7 @@ export class CreatorSimpleJavaFXProject {
       "settings.json"
     );
 
-    let settingsJsonContent: VSCodeJavaSettingsFile =
+    const settingsJsonContent: VSCodeJavaSettingsFile =
       fse.readJsonSync(settingsJsonFile) || {};
 
     const javaFXReferencedLibraries = [

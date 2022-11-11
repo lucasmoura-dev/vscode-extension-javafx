@@ -2,7 +2,6 @@ import fileDialogUtils from "./fileDialogUtils";
 import * as fse from "fs-extra";
 import { window, WorkspaceConfiguration } from "vscode";
 import { Configuration } from "../constants/configuration";
-import { config } from "process";
 
 const checkJavaFXLibFolder = async (
   configuration: WorkspaceConfiguration
