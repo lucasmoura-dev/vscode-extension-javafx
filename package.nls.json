@@ -1,4 +1,5 @@
 {
+	"description": "Manage JavaFX projects in Visual Studio Code",
 	"extension.createProject.title": "Create a project...",
 	"extension.configuration.libPath.description": "Path of JavaFX's 'lib' folder."
 }

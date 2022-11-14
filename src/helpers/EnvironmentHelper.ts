@@ -1,5 +1,4 @@
 import * as fse from "fs-extra";
-import * as _ from "lodash";
 import path = require("path");
 import { VSCodeSettingsFiles } from "../constants/vscodeSettingsFiles";
 import { VSCodeConfigurationFile } from "../types/vscodeEnvs";
